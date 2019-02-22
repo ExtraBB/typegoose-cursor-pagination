@@ -52,6 +52,15 @@ Call `findPaged()` with the following parameters:
    @param {_query} A mongo query
    @param {_projection} A mongo projection
    @param {_populate} A mongoose population object
+
+   The response object of findPaged() is as follows:
+    
+    - hasNext {Boolean} hasNext is true if there is a next page
+    - hasPrevious {Boolean} hasPrevious is true if there is a previous page
+    - next {String} next is the cursor for the next page
+    - previous {String} previous is the cursor for the previous page
+    - totalDocs {Number} totalDocs is the total amount of docs for the query
+    - docs {T[]} docs are the resulting documents for this page
 ```
 
 Create your typegoose model as follows:
