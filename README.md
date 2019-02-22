@@ -1,6 +1,6 @@
-# typegoose-cursor-pagination
+# Typegoose Cursor-based Pagination
 
-This module aids in implementing "cursor-based" pagination using Mongo range queries or relevancy-based search results. It is based on the [mongo-cursor-pagination](https://www.npmjs.com/package/mongo-cursor-pagination) package but has a dedicated mongoose plugin (which keeps instance methods etc.) and support for Typegoose out of the box.
+This module aids in implementing "cursor-based" pagination using Mongo range queries or relevancy-based search results. It is based on the [mongo-cursor-pagination](https://www.npmjs.com/package/mongo-cursor-pagination) package but has a dedicated mongoose plugin (which keeps instance methods etc.) and support for **Typegoose** out of the box.
 
 ## Background
 
@@ -36,7 +36,7 @@ Call `findPaged()` with the following parameters:
    Performs a find() query on a passed-in Mongo collection, using criteria you specify. The results
    are ordered by the paginatedField.
 
-   @param {Object} params
+   @param {IPaginateOptions} params
       -limit {Number} The page size. Set 0 for no limit.
       -sortField {String} The field name to query the range for. The field must be:
           1. Orderable. We must sort by this value. If duplicate values for paginatedField field
@@ -49,7 +49,9 @@ Call `findPaged()` with the following parameters:
       -sortAscending {Boolean} True to sort using paginatedField ascending (default is false - descending).
       -next {String} The value to start querying the page.
       -previous {String} The value to start querying previous page.
-   @param {Function} done Node errback style function.
+   @param {_query} A mongo query
+   @param {_projection} A mongo projection
+   @param {_populate} A mongoose population object
 ```
 
 Create your typegoose model as follows:
@@ -61,7 +63,7 @@ import { Typegoose, prop, plugin, index } from "typegoose";
 @plugin(paginatePlugin)
 @index({ email: 1 })
 export default class User extends Typegoose {
-    
+
   @prop({ required: true })
   email: string;
 
@@ -73,16 +75,19 @@ export const UserModel = new User().getModelForClass(User) as PaginateModel<User
 Use the `findPaged()` method as follows:
 
 ```js
+import { Request, Response, NextFunction } from "express";
+import { IPaginateOptions } from "typegoose-cursor-pagination";
+import UserModel from "./User";
 
 export async function getUsers(req: Request, res: Response, next: NextFunction) {
-    const options = {
+    const options: IPaginateOptions = {
         sortField: "email",
         sortAscending: true,
         limit: 10,
         next: "WyJuZXdAdG9rYXMubmwiLHsiJG9pZCI6IjVjNGYxY2U1ODAwYzNjNmIwOGVkZGY3ZCJ9XQ"
     };
 
-    const query: any = {}; // Your specific query
+    const query = {}; // Your specific query
     const projection = {}; // Your desired projection
     const populate = [] // Your needed population
 
@@ -90,3 +95,4 @@ export async function getUsers(req: Request, res: Response, next: NextFunction) 
     const users = await UserModel.findPaged(options, query, projection, populate);
     res.send(users)
 }
+```
