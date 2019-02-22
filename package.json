@@ -1,5 +1,5 @@
 {
-  "name": "mongoose-find-paged",
+  "name": "typegoose-cursor-pagination",
   "version": "1.0.0",
   "description": "A mongoose plugin to find results using on cursor-based pagination with support for typegoose",
   "main": "lib/index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ExtraBB/mongoose-find-paged.git"
+    "url": "git+https://github.com/ExtraBB/typegoose-cursor-pagination.git"
   },
   "keywords": [
     "mongodb",
@@ -24,9 +24,9 @@
   "author": "Bruno Carvalhal",
   "license": "GNU General Public License v3.0",
   "bugs": {
-    "url": "https://github.com/ExtraBB/mongoose-find-paged/issues"
+    "url": "https://github.com/ExtraBB/typegoose-cursor-pagination/issues"
   },
-  "homepage": "https://github.com/ExtraBB/mongoose-find-paged#readme",
+  "homepage": "https://github.com/ExtraBB/typegoose-cursor-pagination#readme",
   "dependencies": {
     "base64-url": "^2.2.0",
     "mongodb-extended-json": "^1.10.1",
