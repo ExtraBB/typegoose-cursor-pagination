@@ -36,3 +36,5 @@ export default function (schema: Schema) {
 
     schema.statics.findPaged = findPaged;
 }
+
+export * from "./types";

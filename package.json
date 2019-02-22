@@ -22,7 +22,7 @@
     "typegoose"
   ],
   "author": "Bruno Carvalhal",
-  "license": "GNU General Public License v3.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ExtraBB/typegoose-cursor-pagination/issues"
   },
