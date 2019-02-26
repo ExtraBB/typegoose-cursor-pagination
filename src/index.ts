@@ -25,12 +25,11 @@ export default function (schema: Schema) {
         options.limit = isNaN(options.limit) ? 10 : options.limit;
 
         // Query documents
-        const query = { $and: [generateCursorQuery(options), _query] };
+        const query = { $and: [generateCursorQuery(options), _query || {}] };
 
         // Request one extra result to check for a next/previous
         const docs = await this.find(query, _projection).sort(sort).limit(unlimited ? 0 : options.limit + 1).populate(_populate || []);
         const totalDocs = await this.countDocuments(_query).exec();
-
         return prepareResponse<T>(docs, options, totalDocs);
     }
 

@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json -d",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ava"
   },
   "repository": {
     "type": "git",
@@ -36,6 +36,20 @@
   "devDependencies": {
     "@types/base64-url": "^2.2.0",
     "@types/mongoose": "^5.3.19",
-    "@types/node": "^11.9.4"
+    "@types/node": "^11.9.4",
+    "ava": "^1.2.1",
+    "ava-spec": "^1.1.1",
+    "mongodb-memory-server": "^3.1.1",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.3333"
+  },
+  "ava": {
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
   }
 }
