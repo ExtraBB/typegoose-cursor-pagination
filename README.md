@@ -28,7 +28,9 @@ Here are some examples of cursor-based APIs:
 
 ### findPaged()
 
-Find will return ordered and paged results based on a field (`sortField`) that you pass in.
+`findPaged()` will return ordered and paged results based on a field (`sortField`) that you pass in.
+
+### Parameters 
 
 Call `findPaged()` with the following parameters:
 -  params {IPaginateOptions} (The paginate options)
@@ -55,6 +57,7 @@ interface IPaginateOptions {
 }
 ```
 
+### Response
 The response object of `findPaged()` is as follows:
 
 ```typescript
@@ -68,6 +71,7 @@ interface IPaginateResult<T> {
 }
 ```
 
+### Typegoose Model
 Create your typegoose model as follows:
 
 ```js
@@ -86,6 +90,7 @@ export default class User extends Typegoose {
 export const UserModel = new User().getModelForClass(User) as PaginateModel<User, typeof User>;
 ```
 
+### Example
 Use the `findPaged()` method as follows:
 
 ```js
