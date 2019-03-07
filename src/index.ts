@@ -5,6 +5,7 @@ import { IPaginateOptions, IPaginateResult } from "./types";
 
 export interface IPluginOptions {
     dontReturnTotalDocs: boolean;
+    dontAllowUnlimitedResults: boolean;
 }
 
 /**
@@ -25,8 +26,9 @@ export default function (schema: Schema, pluginOptions?: IPluginOptions) {
         const sort = generateSort(options);
 
         // Determine limit
-        const unlimited = options.limit === 0;
-        options.limit = isNaN(options.limit) ? 10 : options.limit;
+        const useDefaultLimit = isNaN(options.limit) || options.limit < 0 || options.limit === 0 && pluginOptions && pluginOptions.dontAllowUnlimitedResults;
+        const unlimited = options.limit === 0 && (!pluginOptions || !pluginOptions.dontAllowUnlimitedResults);
+        options.limit = useDefaultLimit ? 10 : options.limit;
 
         // Query documents
         const query = { $and: [generateCursorQuery(options), _query || {}] };
