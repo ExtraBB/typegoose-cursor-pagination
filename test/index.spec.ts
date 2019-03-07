@@ -245,7 +245,7 @@ describe("Plugin Options", (it) => {
         t.is(result.totalDocs, undefined);
     });
 
-    it("should not allow unlimited results", async function (t: any) {
+    it("should not allow unlimited results when option is set", async function (t: any) {
         // Create new collection
         const ISBNSchema = new mongoose.Schema({ name: String });
         ISBNSchema.plugin(plugin, { dontAllowUnlimitedResults: true });
@@ -256,7 +256,7 @@ describe("Plugin Options", (it) => {
         const isbns = [];
         for (let i = 0; i < 20; i++) {
             isbn = new ISBN({
-                code: 98702822618171
+                code: 987028226181 + i
             });
             isbns.push(isbn);
         }
@@ -268,5 +268,27 @@ describe("Plugin Options", (it) => {
 
         const result2 = await ISBN.findPaged({ limit: -2 });
         t.is(result2.docs.length, 10);
+    });
+
+    it("should set default limit when set", async function (t: any) {
+        // Create new collection
+        const ISBNShortSchema = new mongoose.Schema({ name: String });
+        ISBNShortSchema.plugin(plugin, { defaultLimit: 12 });
+        const ISBNShort = mongoose.model("ISBNShort", ISBNShortSchema) as IPaginateModel<any>;
+
+        // Create document
+        let isbnShort;
+        const isbnShorts = [];
+        for (let i = 0; i < 20; i++) {
+            isbnShort = new ISBNShort({
+                code: 9870282 + i
+            });
+            isbnShorts.push(isbnShort);
+        }
+        await ISBNShort.create(isbnShorts);
+
+        // negative limit defaults to default limit
+        const result = await ISBNShort.findPaged({});
+        t.is(result.docs.length, 12);
     });
 });
