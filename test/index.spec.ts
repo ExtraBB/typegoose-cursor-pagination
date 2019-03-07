@@ -244,4 +244,29 @@ describe("Plugin Options", (it) => {
         t.is(result.docs.length, 1);
         t.is(result.totalDocs, undefined);
     });
+
+    it("should not allow unlimited results", async function (t: any) {
+        // Create new collection
+        const ISBNSchema = new mongoose.Schema({ name: String });
+        ISBNSchema.plugin(plugin, { dontAllowUnlimitedResults: true });
+        const ISBN = mongoose.model("ISBN", ISBNSchema) as IPaginateModel<any>;
+
+        // Create document
+        let isbn;
+        const isbns = [];
+        for (let i = 0; i < 20; i++) {
+            isbn = new ISBN({
+                code: 98702822618171
+            });
+            isbns.push(isbn);
+        }
+        await ISBN.create(isbns);
+
+        // negative limit defaults to default limit
+        const result = await ISBN.findPaged({ limit: 0 });
+        t.is(result.docs.length, 10);
+
+        const result2 = await ISBN.findPaged({ limit: -2 });
+        t.is(result2.docs.length, 10);
+    });
 });
