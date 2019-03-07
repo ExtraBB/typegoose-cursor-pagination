@@ -28,6 +28,17 @@ Here are some examples of cursor-based APIs:
 
 ## Usage
 
+### Plugin options
+The plugin accepts the following options:
+
+```typescript
+export interface IPluginOptions {
+    dontReturnTotalDocs?: boolean; // Don't return the total number of results for the given query
+    dontAllowUnlimitedResults?: boolean; // Don't allow unlimited results
+    defaultLimit?: number; // A default limit instead of 10
+}
+```
+
 ### findPaged()
 
 `findPaged()` will return ordered and paged results based on a field (`sortField`) that you pass in.
