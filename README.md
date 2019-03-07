@@ -38,7 +38,7 @@ Call `findPaged()` with the following parameters:
 -  params {IPaginateOptions} (The paginate options)
 -  _query {Object} (A mongo query)
 -  _projection {Object} (A mongo projection)
--  _populate {Object|String[]} (A mongoose population object or string array)
+-  _populate {ModelPopulateOptions | ModelPopulateOptions[]} (A mongoose population object or array)
 
 ```typescript
 interface IPaginateOptions {
