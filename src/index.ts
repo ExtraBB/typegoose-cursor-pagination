@@ -3,11 +3,15 @@ import { generateCursorQuery, generateSort } from "./query";
 import { prepareResponse } from "./response";
 import { IPaginateOptions, IPaginateResult } from "./types";
 
+export interface IPluginOptions {
+    dontReturnTotalDocs: boolean;
+}
+
 /**
  * A mongoose plugin to perform paginated find() requests.
  * @param schema the schema for the plugin
  */
-export default function (schema: Schema) {
+export default function (schema: Schema, pluginOptions?: IPluginOptions) {
 
     /**
      * Peform a paginated find() request
@@ -29,8 +33,13 @@ export default function (schema: Schema) {
 
         // Request one extra result to check for a next/previous
         const docs = await this.find(query, _projection).sort(sort).limit(unlimited ? 0 : options.limit + 1).populate(_populate || []);
-        const totalDocs = await this.countDocuments(_query).exec();
-        return prepareResponse<T>(docs, options, totalDocs);
+
+        if (pluginOptions && pluginOptions.dontReturnTotalDocs) {
+            return prepareResponse<T>(docs, options);
+        } else {
+            const totalDocs = await this.countDocuments(_query).exec();
+            return prepareResponse<T>(docs, options, totalDocs);
+        }
     }
 
     schema.statics.findPaged = findPaged;

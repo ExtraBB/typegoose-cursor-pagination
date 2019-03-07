@@ -7,7 +7,7 @@ import * as bsonUrlEncoding from "./utils/bsonUrlEncoding";
  * @param options The pagination options
  * @param totalDocs The total amount of documents (without limit)
  */
-export function prepareResponse<T>(_docs: T[], options: IPaginateOptions, totalDocs: number) {
+export function prepareResponse<T>(_docs: T[], options: IPaginateOptions, totalDocs?: number) {
     // Check if there is a next/previous page
     const hasMore = options.limit && _docs.length > options.limit;
     if (hasMore) {
@@ -30,7 +30,7 @@ export function prepareResponse<T>(_docs: T[], options: IPaginateOptions, totalD
         hasNext,
         next,
         previous,
-        totalDocs
+        ...(totalDocs !== undefined && { totalDocs })
     };
 
     return result;
