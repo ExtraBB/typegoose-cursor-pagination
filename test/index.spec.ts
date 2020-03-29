@@ -2,7 +2,7 @@ import test from "ava";
 import mongoose, { Schema } from "mongoose";
 import { describe } from "ava-spec";
 import plugin, { IPaginateModel } from "../src/index";
-import MongoMemoryServer from "mongodb-memory-server";
+import { MongoMemoryServer } from "mongodb-memory-server";
 
 // Author
 const AuthorSchema = new mongoose.Schema({ name: String });
@@ -25,7 +25,7 @@ const Post = mongoose.model("Post", PostSchema) as IPaginateModel<any>;
 // Setup Database
 test.before("start mongoose connection and add data into collection", async () => {
     const mongod = new MongoMemoryServer({
-        binary: { version: "3.4.6" }
+        binary: { version: "4.2.1" }
     });
 
     await mongoose.connect(await mongod.getConnectionString());
@@ -41,7 +41,7 @@ test.before("start mongoose connection and add data into collection", async () =
             title: "Post #" + i,
             date: new Date(date.getTime() + i),
             author: author._id,
-            body: "Post Body #" + i,
+            body: "Post Body #" + i
         });
         posts.push(post);
     }
@@ -49,13 +49,13 @@ test.before("start mongoose connection and add data into collection", async () =
     await Post.create(posts);
 });
 
-describe("general functionality", (it) => {
-    it("return promise", function (t: any) {
+describe("general functionality", it => {
+    it("return promise", function(t: any) {
         const promise = Post.findPaged({});
         t.is(promise.then instanceof Function, true);
     });
 
-    it("should return data in expected format", async function (t: any) {
+    it("should return data in expected format", async function(t: any) {
         const result = await Post.findPaged({});
         t.is(result.hasOwnProperty("docs"), true);
         t.is(result.hasOwnProperty("totalDocs"), true);
@@ -66,25 +66,27 @@ describe("general functionality", (it) => {
     });
 });
 
-describe("limit", (it) => {
-    it("should use a default limit of 10 when none is specified", async function (t: any) {
+describe("limit", it => {
+    it("should use a default limit of 10 when none is specified", async function(t: any) {
         const result = await Post.findPaged({});
         t.is(result.docs.length, 10);
     });
 
-    it("should use no limit when set to 0", async function (t: any) {
+    it("should use no limit when set to 0", async function(t: any) {
         const result = await Post.findPaged({ limit: 0 });
         t.is(result.docs.length, 100);
-    }); ``;
+    });
+    ``;
 
-    it("should use a limit when set", async function (t: any) {
+    it("should use a limit when set", async function(t: any) {
         const result = await Post.findPaged({ limit: 20 });
-        t.is(result.docs.length, 20); ``;
+        t.is(result.docs.length, 20);
+        ``;
     });
 });
 
-describe("sort", (it) => {
-    it("should sort descending on _id when no sort is specified", async function (t: any) {
+describe("sort", it => {
+    it("should sort descending on _id when no sort is specified", async function(t: any) {
         const result = await Post.findPaged({});
         for (let i = 0; i < result.docs.length; i++) {
             if (i !== result.docs.length - 1) {
@@ -93,7 +95,7 @@ describe("sort", (it) => {
         }
     });
 
-    it("should sort ascending on _id with sortAscending", async function (t: any) {
+    it("should sort ascending on _id with sortAscending", async function(t: any) {
         const result = await Post.findPaged({ sortAscending: true });
         for (let i = 0; i < result.docs.length; i++) {
             if (i !== result.docs.length - 1) {
@@ -102,7 +104,7 @@ describe("sort", (it) => {
         }
     });
 
-    it("should sort descending on title when sortField is title", async function (t: any) {
+    it("should sort descending on title when sortField is title", async function(t: any) {
         const result = await Post.findPaged({ sortField: "title" });
         for (let i = 0; i < result.docs.length; i++) {
             if (i !== result.docs.length - 1) {
@@ -111,7 +113,7 @@ describe("sort", (it) => {
         }
     });
 
-    it("should sort ascending on title when sortField is title", async function (t: any) {
+    it("should sort ascending on title when sortField is title", async function(t: any) {
         const result = await Post.findPaged({ sortField: "title", sortAscending: true });
         for (let i = 0; i < result.docs.length; i++) {
             if (i !== result.docs.length - 1) {
@@ -121,11 +123,11 @@ describe("sort", (it) => {
     });
 });
 
-describe("next/previous", (it) => {
+describe("next/previous", it => {
     const baseOptions = { limit: 2, sortField: "title", sortAscending: true };
     const query = { title: { $in: ["Post #1", "Post #2", "Post #3", "Post #4", "Post #5"] } };
 
-    it("should return correct first page", async function (t: any) {
+    it("should return correct first page", async function(t: any) {
         const page1 = await Post.findPaged(baseOptions, query);
 
         t.is(typeof page1.next, "string");
@@ -137,7 +139,7 @@ describe("next/previous", (it) => {
         t.is(page1.docs[1].title, "Post #2");
     });
 
-    it("should return correct second page (on next)", async function (t: any) {
+    it("should return correct second page (on next)", async function(t: any) {
         const page1 = await Post.findPaged(baseOptions, query);
         const page2 = await Post.findPaged({ ...baseOptions, next: page1.next }, query);
 
@@ -150,7 +152,7 @@ describe("next/previous", (it) => {
         t.is(page2.docs[1].title, "Post #4");
     });
 
-    it("should return correct third page (on next)", async function (t: any) {
+    it("should return correct third page (on next)", async function(t: any) {
         const page1 = await Post.findPaged(baseOptions, query);
         const page2 = await Post.findPaged({ ...baseOptions, next: page1.next }, query);
         const page3 = await Post.findPaged({ ...baseOptions, next: page2.next }, query);
@@ -163,7 +165,7 @@ describe("next/previous", (it) => {
         t.is(page3.docs[0].title, "Post #5");
     });
 
-    it("should return correct second page (on previous)", async function (t: any) {
+    it("should return correct second page (on previous)", async function(t: any) {
         const page1 = await Post.findPaged(baseOptions, query);
         const page2 = await Post.findPaged({ ...baseOptions, next: page1.next }, query);
         const page3 = await Post.findPaged({ ...baseOptions, next: page2.next }, query);
@@ -176,7 +178,7 @@ describe("next/previous", (it) => {
         t.is(previousPage2.docs[1].title, "Post #4");
     });
 
-    it("should return correct first page (on previous)", async function (t: any) {
+    it("should return correct first page (on previous)", async function(t: any) {
         const page1 = await Post.findPaged(baseOptions, query);
         const page2 = await Post.findPaged({ ...baseOptions, next: page1.next }, query);
         const page3 = await Post.findPaged({ ...baseOptions, next: page2.next }, query);
@@ -191,8 +193,8 @@ describe("next/previous", (it) => {
     });
 });
 
-describe("query", (it) => {
-    it("should allow queries", async function (t: any) {
+describe("query", it => {
+    it("should allow queries", async function(t: any) {
         const result = await Post.findPaged({}, { title: { $in: ["Post #3", "Post #27"] } });
         t.is(result.docs.length, 2);
         t.is(result.docs[0].title, "Post #27");
@@ -200,8 +202,8 @@ describe("query", (it) => {
     });
 });
 
-describe("projection", (it) => {
-    it("should allow projections", async function (t: any) {
+describe("projection", it => {
+    it("should allow projections", async function(t: any) {
         const result = await Post.findPaged({ limit: 1 }, {}, { title: 1 });
         t.is(result.docs.length, 1);
 
@@ -212,22 +214,22 @@ describe("projection", (it) => {
     });
 });
 
-describe("population", (it) => {
-    it("should allow populates", async function (t: any) {
+describe("population", it => {
+    it("should allow populates", async function(t: any) {
         const result = await Post.findPaged({ limit: 1 }, {}, {}, ["author"]);
         t.is(result.docs.length, 1);
         t.is(result.docs[0].author.name, "Pawan Pandey");
     });
 
-    it("should allow populates with object", async function (t: any) {
+    it("should allow populates with object", async function(t: any) {
         const result = await Post.findPaged({ limit: 1 }, {}, {}, [{ path: "author", model: Author }]);
         t.is(result.docs.length, 1);
         t.is(result.docs[0].author.name, "Pawan Pandey");
     });
 });
 
-describe("Plugin Options", (it) => {
-    it("should not show totalDocs when dontReturnTotalDocs is set", async function (t: any) {
+describe("Plugin Options", it => {
+    it("should not show totalDocs when dontReturnTotalDocs is set", async function(t: any) {
         // Create new collection
         const GenreSchema = new mongoose.Schema({ name: String });
         GenreSchema.plugin(plugin, { dontReturnTotalDocs: true });
@@ -245,7 +247,7 @@ describe("Plugin Options", (it) => {
         t.is(result.totalDocs, undefined);
     });
 
-    it("should not allow unlimited results when option is set", async function (t: any) {
+    it("should not allow unlimited results when option is set", async function(t: any) {
         // Create new collection
         const ISBNSchema = new mongoose.Schema({ name: String });
         ISBNSchema.plugin(plugin, { dontAllowUnlimitedResults: true });
@@ -270,7 +272,7 @@ describe("Plugin Options", (it) => {
         t.is(result2.docs.length, 10);
     });
 
-    it("should set default limit when set", async function (t: any) {
+    it("should set default limit when set", async function(t: any) {
         // Create new collection
         const ISBNShortSchema = new mongoose.Schema({ name: String });
         ISBNShortSchema.plugin(plugin, { defaultLimit: 12 });
