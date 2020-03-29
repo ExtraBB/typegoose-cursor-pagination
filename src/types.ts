@@ -1,5 +1,5 @@
 import { Model, DocumentQuery } from "mongoose";
-import { InstanceType } from "typegoose";
+import { DocumentType } from "@typegoose/typegoose";
 
 /**
  * The pagination options that can be passed.
@@ -27,12 +27,17 @@ export interface IPaginateResult<T> {
 /**
  * An extension of the mongoose Model which include the findPaged method.
  */
-export interface IPaginateModel<T> extends Model<InstanceType<T>, {}> {
-    findPaged(options: IPaginateOptions, query?: Object, projection?: Object, _populate?: (Object | string)[]): DocumentQuery<IPaginateResult<InstanceType<T>>, InstanceType<T>>;
+export interface IPaginateModel<T> extends Model<DocumentType<T>, {}> {
+    findPaged(
+        options: IPaginateOptions,
+        query?: Object,
+        projection?: Object,
+        _populate?: (Object | string)[]
+    ): DocumentQuery<IPaginateResult<DocumentType<T>>, DocumentType<T>>;
 }
 
 /**
  * [Typegoose only] This is a type that you can cast your Typegoose model to
  * Example: export const UserModel = new User().getModelForClass(User) as PaginateModel<User, typeof User>;
  */
-export type PaginateModel<T, T2> = IPaginateModel<InstanceType<T>> & T & T2;
+export type PaginateModel<T, T2> = IPaginateModel<DocumentType<T>> & T & T2;
