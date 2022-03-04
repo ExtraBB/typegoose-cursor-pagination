@@ -24,11 +24,9 @@ const Post = mongoose.model("Post", PostSchema) as IPaginateModel<any>;
 
 // Setup Database
 test.before("start mongoose connection and add data into collection", async () => {
-    const mongod = new MongoMemoryServer({
-        binary: { version: "4.2.1" }
-    });
+    const mongod = await MongoMemoryServer.create();
 
-    await mongoose.connect(await mongod.getConnectionString());
+    await mongoose.connect(await mongod.getUri());
     await mongoose.connection.db.dropDatabase();
     const author = await Author.create({ name: "Pawan Pandey" });
 

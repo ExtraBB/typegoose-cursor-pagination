@@ -1,4 +1,4 @@
-import { Schema, ModelPopulateOptions } from "mongoose";
+import { Schema, PopulateOptions } from "mongoose";
 import { generateCursorQuery, generateSort } from "./query";
 import { prepareResponse } from "./response";
 import { IPaginateOptions, IPaginateResult } from "./types";
@@ -20,9 +20,9 @@ export default function (schema: Schema, pluginOptions?: IPluginOptions) {
      * @param {IPaginateOptions} options the pagination options
      * @param {Object} [_query] the mongo query
      * @param {Object} [_projection] the mongo projection
-     * @param {ModelPopulateOptions | ModelPopulateOptions[]} [_populate] the mongo populate
+     * @param {string | PopulateOptions | (string | PopulateOptions)[]} [_populate] the mongo populate
      */
-    async function findPaged<T>(options: IPaginateOptions, _query?: Object, _projection?: Object, _populate?: ModelPopulateOptions | ModelPopulateOptions[]): Promise<IPaginateResult<T>> {
+    async function findPaged<T>(options: IPaginateOptions, _query?: Object, _projection?: Object, _populate?: string | PopulateOptions | (string | PopulateOptions)[]): Promise<IPaginateResult<T>> {
         // Determine sort
         const sort = generateSort(options);
 

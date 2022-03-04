@@ -1,4 +1,4 @@
-import { Model, DocumentQuery } from "mongoose";
+import { Model, Query } from "mongoose";
 import { DocumentType } from "@typegoose/typegoose";
 
 /**
@@ -33,7 +33,7 @@ export interface IPaginateModel<T> extends Model<DocumentType<T>, {}> {
         query?: Object,
         projection?: Object,
         _populate?: (Object | string)[]
-    ): DocumentQuery<IPaginateResult<DocumentType<T>>, DocumentType<T>>;
+    ): Query<IPaginateResult<DocumentType<T>>, DocumentType<T>>;
 }
 
 /**
