@@ -3,7 +3,7 @@ import { prepareResponse } from "../src/response";
 
 describe("prepareResponse", (it) => {
     it("should return empty response", function (t: any) {
-        const docs: String[] = [];
+        const docs: any[] = [];
 
         const response = prepareResponse(docs, {}, 0);
 
@@ -16,7 +16,7 @@ describe("prepareResponse", (it) => {
     });
 
     it("should return single page response", function (t: any) {
-        const docs: String[] = ["a", "b"];
+        const docs: any[] = [{ _id: "a"}, {_id: "b"}];
 
         const response = prepareResponse(docs, { limit: 5 }, 2);
 
@@ -29,7 +29,7 @@ describe("prepareResponse", (it) => {
     });
 
     it("should not return totaldocs when the parameter is undefined", function (t: any) {
-        const docs: String[] = ["a", "b"];
+        const docs: any[] = [{ _id: "a"}, {_id: "b"}];
 
         const response = prepareResponse(docs, { limit: 5 });
 
@@ -42,14 +42,14 @@ describe("prepareResponse", (it) => {
     });
 
     it("should return multi page response", function (t: any) {
-        const docs: String[] = ["a", "b", "c", "d"];
+        const docs: any[] = [{ _id: "a"}, {_id: "b"}, {_id: "c"}, {_id: "d"}];
 
         const response = prepareResponse(docs, { limit: 2 }, 4);
 
         t.deepEqual(response.docs, docs);
         t.is(response.hasNext, true);
         t.is(response.hasPrevious, false);
-        t.is(response.next, "W3siJHVuZGVmaW5lZCI6dHJ1ZX1d");
+        t.is(response.next, "WyJjIl0");
         t.is(response.previous, undefined);
         t.is(response.totalDocs, 4);
     });

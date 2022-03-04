@@ -55,12 +55,12 @@ describe("general functionality", it => {
 
     it("should return data in expected format", async function(t: any) {
         const result = await Post.findPaged({});
-        t.is(result.hasOwnProperty("docs"), true);
-        t.is(result.hasOwnProperty("totalDocs"), true);
-        t.is(result.hasOwnProperty("previous"), true);
-        t.is(result.hasOwnProperty("hasPrevious"), true);
-        t.is(result.hasOwnProperty("next"), true);
-        t.is(result.hasOwnProperty("hasNext"), true);
+        t.is(Object.prototype.hasOwnProperty.call(result, "docs"), true);
+        t.is(Object.prototype.hasOwnProperty.call(result, "totalDocs"), true);
+        t.is(Object.prototype.hasOwnProperty.call(result, "previous"), true);
+        t.is(Object.prototype.hasOwnProperty.call(result, "hasPrevious"), true);
+        t.is(Object.prototype.hasOwnProperty.call(result, "next"), true);
+        t.is(Object.prototype.hasOwnProperty.call(result, "hasNext"), true);
     });
 });
 

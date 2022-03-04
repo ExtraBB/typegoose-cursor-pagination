@@ -1,5 +1,5 @@
-const EJSON = require("mongodb-extended-json");
 import * as base64url from "base64-url";
+import { EJSON } from "bson";
 
 /**
  * Encode a BSON object to a URL-safe string format

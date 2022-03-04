@@ -4,6 +4,9 @@
 
 This module aids in implementing "cursor-based" pagination using Mongo range queries or relevancy-based search results. It is based on the [mongo-cursor-pagination](https://www.npmjs.com/package/mongo-cursor-pagination) package but has a dedicated mongoose plugin (which keeps instance methods etc.) and support for **Typegoose** out of the box.
 
+## Demo project
+A demo project can be found here: https://github.com/ExtraBB/typegoose-cursor-pagination-demo
+
 ## Background
 
 See this [blog post](https://mixmax.com/blog/api-paging-built-the-right-way) for background on why this library was built.
