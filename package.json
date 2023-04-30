@@ -6,8 +6,7 @@
     "scripts": {
         "build": "tsc -p tsconfig.json -d",
         "test": "mocha",
-        "lint": "eslint . --ext .js,.ts",
-        "ci": "npm run lint && npm run test"
+        "lint": "eslint . --ext .js,.ts"
     },
     "repository": {
         "type": "git",
