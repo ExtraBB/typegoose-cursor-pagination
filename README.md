@@ -92,18 +92,20 @@ Create your typegoose model as follows:
 
 ```js
 import paginationPlugin, { PaginateModel } from 'typegoose-cursor-pagination';
-import { Typegoose, prop, plugin, index } from "typegoose";
+import { prop, getModelForClass, plugin, index } from "@typegoose/typegoose";
+import mongoose from "mongoose";
 
-@plugin(paginatePlugin)
+@plugin(paginationPlugin)
 @index({ email: 1 })
-export default class User extends Typegoose {
+export class User {
+  @prop({  required: true })
+  name: string;
 
   @prop({ required: true })
   email: string;
+}
 
-});
-
-export const UserModel = new User().getModelForClass(User) as PaginateModel<User, typeof User>;
+export const UserModel = getModelForClass(User, { existingMongoose: mongoose }) as PaginateModel<User, typeof User>;;
 ```
 
 ### Example
