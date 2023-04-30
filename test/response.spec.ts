@@ -1,56 +1,56 @@
-import { describe } from "ava-spec";
 import { prepareResponse } from "../src/response";
+import { assert } from "chai";
 
-describe("prepareResponse", (it) => {
-    it("should return empty response", function (t: any) {
+describe("prepareResponse", () => {
+    it("should return empty response", () => {
         const docs: any[] = [];
 
         const response = prepareResponse(docs, {}, 0);
 
-        t.deepEqual(response.docs, []);
-        t.is(response.hasNext, false);
-        t.is(response.hasPrevious, false);
-        t.is(response.next, undefined);
-        t.is(response.previous, undefined);
-        t.is(response.totalDocs, 0);
+        assert.deepEqual(response.docs, []);
+        assert.equal(response.hasNext, false);
+        assert.equal(response.hasPrevious, false);
+        assert.equal(response.next, undefined);
+        assert.equal(response.previous, undefined);
+        assert.equal(response.totalDocs, 0);
     });
 
-    it("should return single page response", function (t: any) {
+    it("should return single page response", () => {
         const docs: any[] = [{ _id: "a"}, {_id: "b"}];
 
         const response = prepareResponse(docs, { limit: 5 }, 2);
 
-        t.deepEqual(response.docs, docs);
-        t.is(response.hasNext, false);
-        t.is(response.hasPrevious, false);
-        t.is(response.next, undefined);
-        t.is(response.previous, undefined);
-        t.is(response.totalDocs, 2);
+        assert.deepEqual(response.docs, docs);
+        assert.equal(response.hasNext, false);
+        assert.equal(response.hasPrevious, false);
+        assert.equal(response.next, undefined);
+        assert.equal(response.previous, undefined);
+        assert.equal(response.totalDocs, 2);
     });
 
-    it("should not return totaldocs when the parameter is undefined", function (t: any) {
+    it("should not return totaldocs when the parameter is undefined", () => {
         const docs: any[] = [{ _id: "a"}, {_id: "b"}];
 
         const response = prepareResponse(docs, { limit: 5 });
 
-        t.deepEqual(response.docs, docs);
-        t.is(response.hasNext, false);
-        t.is(response.hasPrevious, false);
-        t.is(response.next, undefined);
-        t.is(response.previous, undefined);
-        t.is(response.totalDocs, undefined);
+        assert.deepEqual(response.docs, docs);
+        assert.equal(response.hasNext, false);
+        assert.equal(response.hasPrevious, false);
+        assert.equal(response.next, undefined);
+        assert.equal(response.previous, undefined);
+        assert.equal(response.totalDocs, undefined);
     });
 
-    it("should return multi page response", function (t: any) {
+    it("should return multi page response", () => {
         const docs: any[] = [{ _id: "a"}, {_id: "b"}, {_id: "c"}, {_id: "d"}];
 
         const response = prepareResponse(docs, { limit: 2 }, 4);
 
-        t.deepEqual(response.docs, docs);
-        t.is(response.hasNext, true);
-        t.is(response.hasPrevious, false);
-        t.is(response.next, "WyJjIl0");
-        t.is(response.previous, undefined);
-        t.is(response.totalDocs, 4);
+        assert.deepEqual(response.docs, docs);
+        assert.equal(response.hasNext, true);
+        assert.equal(response.hasPrevious, false);
+        assert.equal(response.next, "WyJjIl0");
+        assert.equal(response.previous, undefined);
+        assert.equal(response.totalDocs, 4);
     });
 });

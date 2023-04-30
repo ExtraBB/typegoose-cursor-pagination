@@ -1,6 +1,8 @@
 import { IPaginateResult, IPaginateOptions } from "./types";
 import * as bsonUrlEncoding from "./utils/bsonUrlEncoding";
-import R from "ramda";
+import objectPath from "object-path";
+
+const objectPathWithInheritedProps = objectPath.create({includeInheritedProps: true})
 
 /**
  * Prepare a response to send back to the client
@@ -45,7 +47,7 @@ export function prepareResponse<T>(_docs: T[], options: IPaginateOptions, totalD
 function prepareCursor(doc: InstanceType<any>, sortField: string): string {
     // Always save _id for secondary sorting.
     if (sortField && sortField !== "_id") {
-        return bsonUrlEncoding.encode([R.path(sortField.split("."), doc), doc._id]);
+        return bsonUrlEncoding.encode([objectPathWithInheritedProps.get(doc, sortField), doc._id]);
     } else {
         return bsonUrlEncoding.encode([doc._id]);
     }
