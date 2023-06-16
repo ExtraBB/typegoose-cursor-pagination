@@ -25,6 +25,11 @@ export interface IPaginateResult<T> {
 }
 
 /**
+ * Verbosity mode for mongoDB's explain() function
+ */
+export type VerboseMode = "queryPlanner" | "executionStats" | "allPlansExecution";
+
+/**
  * An extension of the mongoose Model which include the findPaged method.
  */
 export interface IPaginateModel<T> extends Model<DocumentType<T>, {}> {
@@ -34,6 +39,12 @@ export interface IPaginateModel<T> extends Model<DocumentType<T>, {}> {
         projection?: Object,
         _populate?: (Object | string)[]
     ): Query<IPaginateResult<DocumentType<T>>, DocumentType<T>>;
+    findPagedExplain(
+        options: IPaginateOptions,
+        verbose?: VerboseMode,
+        _query?: Object,
+        _projection?: Object
+    ): Promise<any>;
 }
 
 /**

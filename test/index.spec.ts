@@ -199,6 +199,24 @@ describe("query", () => {
     });
 });
 
+describe("explain", () => {
+    it("should allow queryPlanner explains", async () => {
+        const result = await Post.findPagedExplain({}, "queryPlanner", { title: { $in: ["Post #3", "Post #27"] } });
+        assert.isTrue(!!result.queryPlanner);
+    });
+
+    it("should allow executionStats explains", async () => {
+        const result = await Post.findPagedExplain({}, "executionStats", { title: { $in: ["Post #3", "Post #27"] } });
+        assert.isTrue(!!result.executionStats);
+    });
+
+    it("should allow allPlansExecution explains", async () => {
+        const result = await Post.findPagedExplain({}, "allPlansExecution", { title: { $in: ["Post #3", "Post #27"] } });
+        assert.isTrue(!!result.queryPlanner);
+        assert.isTrue(!!result.executionStats);
+    });
+});
+
 describe("projection", () => {
     it("should allow projections", async () => {
         const result = await Post.findPaged({ limit: 1 }, {}, { title: 1 });
