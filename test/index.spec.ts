@@ -77,6 +77,8 @@ describe("limit", () => {
         assert.equal(result.docs.length, 100);
 
         // aggregatation cannot be done without any pipeline
+        const aggregateResult = await Post.aggregatePaged({ limit: 0 }, []);
+        assert.equal(aggregateResult.docs.length, 100);
     });
     ``;
 
