@@ -1,5 +1,5 @@
-import { Schema, PopulateOptions } from "mongoose";
-import { generateCursorQuery, generateSort } from "./query";
+import { Schema, PopulateOptions, PipelineStage, Collection, Model } from "mongoose";
+import { generateAggregatePipeline, generateCursorQuery, generateSort } from "./query";
 import { prepareResponse } from "./response";
 import { IPaginateOptions, IPaginateResult, VerboseMode } from "./types";
 
@@ -64,8 +64,58 @@ export default function (schema: Schema, pluginOptions?: IPluginOptions) {
         return await createFindPromise(this, options, _query, _projection).explain(verbose);
     }
 
+    function createAggregatePromise<T>(
+        mongoCollection: Model<T>,
+        options: IPaginateOptions,
+        pipeline: PipelineStage[],
+    ) {
+        // Determine sort and limit for pagination
+        const sort = generateSort(options);
+
+        const defaultLimit = (pluginOptions && pluginOptions.defaultLimit ? pluginOptions.defaultLimit : 10);
+        const useDefaultLimit = isNaN(options.limit) || options.limit < 0 || options.limit === 0 && pluginOptions && pluginOptions.dontAllowUnlimitedResults;
+        const unlimited = options.limit === 0 && (!pluginOptions || !pluginOptions.dontAllowUnlimitedResults);
+        options.limit = useDefaultLimit ? defaultLimit : options.limit;
+    
+        // Apply pagination to the pipeline
+        const paginatedPipeline = [...generateAggregatePipeline(options), ...pipeline, { $sort: sort as any }];
+
+        if (!unlimited) {
+            paginatedPipeline.push({ $limit: options.limit + 1 });
+        }
+    
+        // Execute the aggregate query
+        const cursor = mongoCollection.aggregate<T>(paginatedPipeline);
+    
+        return cursor;
+    }
+    
+    async function aggregatePaged<T>(
+        options: IPaginateOptions,
+        pipeline: PipelineStage[],
+    ): Promise<IPaginateResult<T>> {
+        // Execute the aggregate query
+        const cursor = createAggregatePromise<T>(this, options, pipeline);
+
+        // Fetch documents
+        const docs = await cursor.exec();
+
+        // Count total documents (if needed)
+        let totalDocs = 0;    
+        if (pluginOptions && pluginOptions.dontReturnTotalDocs) {
+            return prepareResponse<T>(docs, options);
+        } else {
+            const countPipeline = [...pipeline, { $group: { _id: null, count: { $sum: 1 } } }];
+            const countCursor = this.aggregate(countPipeline);
+            const countResult = await countCursor.exec();
+            totalDocs = countResult.length > 0 ? countResult[0].count : 0;
+            return prepareResponse<T>(docs, options, totalDocs);
+        }
+    }
+
     schema.statics.findPaged = findPaged;
     schema.statics.findPagedExplain = findPagedExplain;
+    schema.statics.aggregatePaged = aggregatePaged;
 }
 
 export * from "./types";

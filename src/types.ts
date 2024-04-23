@@ -1,4 +1,4 @@
-import { Model, Query } from "mongoose";
+import { Model, PipelineStage, Query } from "mongoose";
 import { DocumentType } from "@typegoose/typegoose";
 
 /**
@@ -45,6 +45,10 @@ export interface IPaginateModel<T> extends Model<DocumentType<T>, {}> {
         _query?: Object,
         _projection?: Object
     ): Promise<any>;
+    aggregatePaged(
+        options: IPaginateOptions,
+        pipeline: PipelineStage[],
+    ): Query<IPaginateResult<DocumentType<T>>, DocumentType<T>>;
 }
 
 /**

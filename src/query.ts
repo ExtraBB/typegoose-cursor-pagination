@@ -1,5 +1,6 @@
 import * as bsonUrlEncoding from "./utils/bsonUrlEncoding";
 import { IPaginateOptions } from "./types";
+import { PipelineStage } from "mongoose";
 
 /**
  * Generate a query object for the next/previous page
@@ -29,6 +30,47 @@ export function generateCursorQuery(options: IPaginateOptions) {
         query._id = { [sortComparer]: decoded[0] };
     }
     return query;
+}
+
+/**
+ * Generate aggregation pipeline stages for cursor-based pagination
+ * @param options The pagination options
+ */
+export function generateAggregatePipeline(options: IPaginateOptions): PipelineStage[] {
+    const pipeline: PipelineStage[] = [];
+
+    if (!options.next && !options.previous) {
+        return pipeline;
+    }
+
+    // Determine the cursor value
+    const cursorValue = options.next ? options.next : options.previous;
+
+    // Decode cursor string
+    const decoded = bsonUrlEncoding.decode(cursorValue);
+
+    const sortAscending = (!options.sortAscending && options.previous) || (options.sortAscending && !options.previous);
+    const sortComparer = sortAscending ? "$gt" : "$lt";
+
+    // Add match stage based on cursor
+    if (options.sortField && options.sortField !== "_id") {
+        pipeline.push({
+            $match: {
+                $or: [
+                    { [options.sortField]: { [sortComparer]: decoded[0] } },
+                    { [options.sortField]: decoded[0], _id: { [sortComparer]: decoded[1] } }
+                ]
+            }
+        });
+    } else {
+        pipeline.push({
+            $match: {
+                _id: { [sortComparer]: decoded[0] }
+            }
+        });
+    }
+
+    return pipeline;
 }
 
 /**
