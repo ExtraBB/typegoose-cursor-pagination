@@ -1,4 +1,4 @@
-import { Schema, PopulateOptions, PipelineStage, Collection, Model } from "mongoose";
+import { Schema, PopulateOptions, PipelineStage, Model } from "mongoose";
 import { generateAggregatePipeline, generateCursorQuery, generateSort } from "./query";
 import { prepareResponse } from "./response";
 import { IPaginateOptions, IPaginateResult, VerboseMode } from "./types";
