@@ -87,6 +87,21 @@ interface IPaginateResult<T> {
 }
 ```
 
+### aggregatePaged()
+
+`aggregatePaged()` will return ordered and paged results based on a field (`sortField`) that you pass in using MongoDB aggregate, which allows for more complicated queries compared to simple `findPaged()`.
+
+### Parameters
+
+Call `aggregatePaged()` with the following parameters:
+
+-  options {IPaginateOptions} (The paginate options)
+-  _pipeline {PipelineStage[]} (The aggregation pipeline array)
+
+### Response
+
+Same as for `findPaged()`
+
 ### Typegoose Model
 Create your typegoose model as follows:
 
