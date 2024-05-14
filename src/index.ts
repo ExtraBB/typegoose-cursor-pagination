@@ -78,7 +78,7 @@ export default function (schema: Schema, pluginOptions?: IPluginOptions) {
         options.limit = useDefaultLimit ? defaultLimit : options.limit;
     
         // Apply pagination to the pipeline
-        const paginatedPipeline = [...generateAggregatePipeline(options), ...pipeline, { $sort: sort as any }];
+        const paginatedPipeline = [...pipeline, ...generateAggregatePipeline(options), { $sort: sort as any }];
 
         if (!unlimited) {
             paginatedPipeline.push({ $limit: options.limit + 1 });
